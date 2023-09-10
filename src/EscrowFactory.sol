@@ -36,10 +36,10 @@ contract EscrowFactoryContract {
         //     revert escrowExists(_adId);
         // }
 
-        //check if the buyer != the seller
-        // if (_seller == _buyer) {
-        //     revert escrowExists(_adId);
-        // }
+        // check if the buyer != the seller
+        if (_seller == _buyer) {
+            revert escrowExists(_adId);
+        }
 
         address newEscrow = address(
             new EscrowContract(_value, _buyer, _seller, _adId, address(this))

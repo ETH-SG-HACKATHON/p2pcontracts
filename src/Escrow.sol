@@ -18,11 +18,16 @@ contract EscrowContract {
 
     State public state;
 
+    address public usdtAddress; // Address of the USDT contract
+    IERC20 public usdtToken; // Interface for interacting with USDT
+
+
     constructor(
         uint256 _value,
         address payable _buyer,
         address payable _seller,
         uint256 _adId,
+        //address _usdtAddress,
         address _escrowFactoryAddr
     ) {
         // Assigning the values of the state variables
@@ -32,6 +37,9 @@ contract EscrowContract {
         seller = _seller;
         adId = _adId;
         escrowFactoryAddr = _escrowFactoryAddr;
+
+        // usdtAddress = _usdtAddress;
+        // usdtToken = IERC20(_usdtAddress);
 
         state = State.await_deposit;
     }
@@ -76,27 +84,37 @@ contract EscrowContract {
         );
         _;
     }
-
-    // //asks seller to deposit the crypto as collateral
-    // function deposit() public payable onlyBuyer instate(State.await_deposit) {
-    //     //seller transfer funds to not arbiter but store the funds inside the contract itself
-
-    //     //move the contract state to wait for the seller to confirm the funds payment
-    //     state = State.await_confirmation;
+///////////
+    // event TokenTransferred(IERC20 token, address to, uint256 amount);
+   
+    // function getBalance(IERC20 tokenAddress) public view returns(uint256) {
+    //     return tokenAddress.balanceOf(address(this));
     // }
-
-    // function deposit() public payable onlyBuyer instate(State.await_deposit) {
-    //     require(
-    //         IERC20(token).allowance(msg.sender, address(this)),
-    //         "Not approved to send balance requested"
-    //     );
-    //     bool success = IERC20(token).transferFrom(
-    //         msg.sender,
-    //         address(this),
-    //         _amount
-    //     );
-    //     require(success, "Transaction was not successful");
+   
+    // function withdrawERC20Token(IERC20 tokenAddress) public {
+    //     require(amount <= tokenAddress.balanceOf(address(this)), "Insufficient token balance");
+    //     tokenAddress.transfer(msg.sender, value);
+    
+    //     emit TokenTransferred(tokenAddress, msg.sender, amount);   
     // }
+    error TranferFailed();
+    function deposit(address token) public payable onlyBuyer instate(State.await_deposit) returns(bool) {
+        // s_balances[msg.token][token]+=amount;
+        bool success = IERC20(token).transferFrom(
+            seller,
+            address(this),
+            value
+        );
+
+        require(success, "Transaction was not successful");
+        // if(!success) revert TransferFailed();
+        return success;
+    }
+
+    function depositUSDT() public {
+        require(usdtToken.transferFrom(buyer, address(this), value), "Transfer failed");
+        // Now, 'amount' of USDT is stored in this contract's balance.
+    }
 
     // function deposit() public payable onlyBuyer inState(State.Created) {
     //     require(
@@ -109,13 +127,15 @@ contract EscrowContract {
 
     //Confirm payment function will trasnfer the crypto funds to the buyer when Seller Confirms the payment
     // from escrow contract send funds to the buyer
+
     function buyerTransfer()
         public
         payable
         onlyListing
         instate(State.await_confirmation)
     {
-        seller.transfer(value); //transfer to buyer
+        // seller.transfer(value); //transfer to buyer
+        usdtToken.transfer(buyer, value);
 
         state = State.completed;
     }
