@@ -20,21 +20,6 @@ contract EscrowFactoryContract {
 
     error escrowExists(uint256 _adId);
 
-    // function addressHasValue(
-    //     address _walletAddress,
-    //     uint256 value
-    // ) public view returns (bool) {
-    //     uint256 usdtBalance = usdtToken.balanceOf(_walletAddress);
-
-    //     // Check if the balance is more than 100 USDT (with 6 decimal places)
-    //     // that means that the address doesnt have that ammount
-    //     if (usdtBalance < value) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // }
-
     function createEscrow(
         uint256 _value, //amount from listing
         address payable _seller, // get from listing
