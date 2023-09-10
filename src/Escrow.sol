@@ -55,17 +55,24 @@ contract EscrowContract {
         _;
     }
     modifier onlyDispute() {
-        EscrowFactoryContract escrowF = escrowFactoryContract(
+        EscrowFactoryContract escrowFac = EscrowFactoryContract(
             escrowFactoryAddr
         );
-        require(msg.sender == escrowF.getDispute());
+        require(
+            msg.sender == escrowFac.getDispute(),
+            "Only the dispute address can call this function"
+        );
         _;
     }
+
     modifier onlyListing() {
-        EscrowFactoryContract escrowF = escrowFactoryContract(
+        EscrowFactoryContract escrowF = EscrowFactoryContract(
             escrowFactoryAddr
         );
-        require(msg.sender == escrowF.getListing());
+        require(
+            msg.sender == escrowF.getListing(),
+            "Only the listing address can call this function"
+        );
         _;
     }
 
@@ -99,15 +106,24 @@ contract EscrowContract {
         state = State.completed;
     }
 
+    function compareStrings(
+        string memory a,
+        string memory b
+    ) internal pure returns (bool) {
+        return keccak256(abi.encodePacked(a)) == keccak256(abi.encodePacked(b));
+    }
+
     //Dispute Transfer function can only be called by the dispute contract
     //b for buyer, s for seller
     function disputeTransfer(
         string calldata winner
     ) public onlyDispute instate(State.await_confirmation) {
-        if (winner == "s") {
+        if (compareStrings(winner, "s")) {
             //send funds to seller
+            state = State.completed;
         } else {
             //winner is b, send funds to buyer
+            state = State.completed;
         }
     }
 }
