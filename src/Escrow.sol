@@ -2,6 +2,7 @@
 pragma solidity ^0.8.13;
 
 import "./EscrowFactory.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract EscrowContract {
     address public escrowFactoryAddr;
@@ -76,12 +77,25 @@ contract EscrowContract {
         _;
     }
 
-    //asks seller to deposit the crypto as collateral
-    function deposit() public payable onlyBuyer instate(State.await_deposit) {
-        //seller transfer funds to not arbiter but store the funds inside the contract itself
+    // //asks seller to deposit the crypto as collateral
+    // function deposit() public payable onlyBuyer instate(State.await_deposit) {
+    //     //seller transfer funds to not arbiter but store the funds inside the contract itself
 
-        //move the contract state to wait for the seller to confirm the funds payment
-        state = State.await_confirmation;
+    //     //move the contract state to wait for the seller to confirm the funds payment
+    //     state = State.await_confirmation;
+    // }
+
+    function deposit() public payable onlyBuyer instate(State.await_deposit) {
+        require(
+            IERC20(token).allowance(msg.sender, address(this)),
+            "Not approved to send balance requested"
+        );
+        bool success = IERC20(token).transferFrom(
+            msg.sender,
+            address(this),
+            _amount
+        );
+        require(success, "Transaction was not successful");
     }
 
     // function deposit() public payable onlyBuyer inState(State.Created) {

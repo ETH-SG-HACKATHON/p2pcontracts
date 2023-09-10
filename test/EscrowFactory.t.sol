@@ -2,21 +2,16 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-// import {Post} from "../src/Post.sol";
-import {EscrowContract} from "../src/Escrow.sol";
+import {EscrowFactoryContract} from "../src/EscrowFactory.sol";
 
-contract EscrowTest is Test {
-    EscrowContract escrow;
+contract EscrowFactoryTest is Test {
+    EscrowFactoryContract escrowFac;
 
-    // function setUp() public {
-    //     escrow = new EscrowContract(
-    //         100,
-    //         payable _buyer,
-    //         payable _seller,
-    //         _adId,
-    //         _escrowFactoryAddr
-    //     );
-    // }
+    function setUp() public {
+        escrowFac = new EscrowFactoryContract();
+    }
+
+    //Test case 1: Create Escrow
 
     // // Test case 1: Test Post Creation
     // function testCreatePost() public {

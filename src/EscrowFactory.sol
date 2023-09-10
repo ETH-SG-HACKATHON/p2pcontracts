@@ -11,6 +11,11 @@ contract EscrowFactoryContract {
     address public disputeContract;
     address public listingContract;
 
+    constructor(address _disputeContract, address _listingContract) {
+        disputeContract = _disputeContract;
+        listingContract = _listingContract;
+    }
+
     mapping(uint256 => address) public adToEscrow;
 
     error escrowExists(uint256 _adId);
@@ -71,12 +76,12 @@ contract EscrowFactoryContract {
         disputeContract = disputeAddress;
     }
 
-    function getDispute() public returns (address) {
-        return disputeContract;
-    }
-
     function changeListing(address listingAddress) public {
         listingContract = listingAddress;
+    }
+
+    function getDispute() public returns (address) {
+        return disputeContract;
     }
 
     function getListing() public returns (address) {
