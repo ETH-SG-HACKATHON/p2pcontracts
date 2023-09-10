@@ -4,7 +4,8 @@ pragma solidity ^0.8.13;
 import "./EscrowFactory.sol";
 
 contract EscrowContract {
-    address public escrowFactoryContract;
+    address public escrowFactoryAddr;
+    EscrowFactoryContract public escrowFactoryContract;
 
     // Declaring the state variables
     address payable public buyer;
@@ -21,7 +22,7 @@ contract EscrowContract {
         address payable _buyer,
         address payable _seller,
         uint256 _adId,
-        address _escrowFactoryContract
+        address _escrowFactoryAddr
     ) {
         // Assigning the values of the state variables
         //arbiter = payable(msg.sender);
@@ -29,7 +30,7 @@ contract EscrowContract {
         buyer = _buyer;
         seller = _seller;
         adId = _adId;
-        escrowFactoryContract = _escrowFactoryContract;
+        escrowFactoryAddr = _escrowFactoryAddr;
 
         state = State.await_deposit;
     }
@@ -54,12 +55,16 @@ contract EscrowContract {
         _;
     }
     modifier onlyDispute() {
-        EscrowFactory escrowF = escrowFactory(escrowFactoryContract);
+        EscrowFactoryContract escrowF = escrowFactoryContract(
+            escrowFactoryAddr
+        );
         require(msg.sender == escrowF.getDispute());
         _;
     }
     modifier onlyListing() {
-        EscrowFactory escrowF = escrowFactory(escrowFactoryContract);
+        EscrowFactoryContract escrowF = escrowFactoryContract(
+            escrowFactoryAddr
+        );
         require(msg.sender == escrowF.getListing());
         _;
     }
@@ -97,7 +102,7 @@ contract EscrowContract {
     //Dispute Transfer function can only be called by the dispute contract
     //b for buyer, s for seller
     function disputeTransfer(
-        string winner
+        string calldata winner
     ) public onlyDispute instate(State.await_confirmation) {
         if (winner == "s") {
             //send funds to seller
