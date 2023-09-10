@@ -85,18 +85,18 @@ contract EscrowContract {
     //     state = State.await_confirmation;
     // }
 
-    function deposit() public payable onlyBuyer instate(State.await_deposit) {
-        require(
-            IERC20(token).allowance(msg.sender, address(this)),
-            "Not approved to send balance requested"
-        );
-        bool success = IERC20(token).transferFrom(
-            msg.sender,
-            address(this),
-            _amount
-        );
-        require(success, "Transaction was not successful");
-    }
+    // function deposit() public payable onlyBuyer instate(State.await_deposit) {
+    //     require(
+    //         IERC20(token).allowance(msg.sender, address(this)),
+    //         "Not approved to send balance requested"
+    //     );
+    //     bool success = IERC20(token).transferFrom(
+    //         msg.sender,
+    //         address(this),
+    //         _amount
+    //     );
+    //     require(success, "Transaction was not successful");
+    // }
 
     // function deposit() public payable onlyBuyer inState(State.Created) {
     //     require(

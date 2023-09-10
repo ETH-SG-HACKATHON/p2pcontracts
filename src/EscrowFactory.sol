@@ -36,10 +36,10 @@ contract EscrowFactoryContract {
     // }
 
     function createEscrow(
-        uint256 _value,
-        address payable _seller,
-        address payable _buyer,
-        uint256 _adId
+        uint256 _value, //amount from listing
+        address payable _seller, // get from listing
+        address payable _buyer, //msg.sender
+        uint256 _adId //id from listing
     ) public {
         //check if sell listing is still available
         if (adToEscrow[_adId] != address(0)) {

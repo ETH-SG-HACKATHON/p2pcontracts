@@ -6,12 +6,24 @@ import {EscrowFactoryContract} from "../src/EscrowFactory.sol";
 
 contract EscrowFactoryTest is Test {
     EscrowFactoryContract escrowFac;
+    address payable someAdd =
+        payable(0xa26c284b6c2fff139c0b371c978033fe48763c25d07b81978767689c5a1fc33d);
 
     function setUp() public {
-        escrowFac = new EscrowFactoryContract();
+        escrowFac = new EscrowFactoryContract(someAdd, someAdd);
     }
 
     //Test case 1: Create Escrow
+    function testCreateEscrow() public {
+        uint256 _value = 100;
+        address payable _seller = someAdd;
+        address payable _buyer = someAdd;
+        uint256 _adId = 1;
+
+        escrowFac.createEscrow(_value, _seller, _buyer, _adId);
+        // assertNotEq(escrowFac.deployedEscrows, address(0));
+        assertEq(escrowFac.adToEscrow(1), escrowFac.deployedEscrows(0));
+    }
 
     // // Test case 1: Test Post Creation
     // function testCreatePost() public {
