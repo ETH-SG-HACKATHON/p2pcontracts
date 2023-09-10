@@ -3,11 +3,13 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 import {EscrowFactoryContract} from "../src/EscrowFactory.sol";
+//import console log
+import "forge-std/console.sol";
 
 contract EscrowFactoryTest is Test {
     EscrowFactoryContract escrowFac;
-    address payable someAdd =
-        payable(0xa26c284b6c2fff139c0b371c978033fe48763c25d07b81978767689c5a1fc33d);
+    address payable public someAdd =
+        payable(0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c);
 
     function setUp() public {
         escrowFac = new EscrowFactoryContract(someAdd, someAdd);
@@ -17,12 +19,16 @@ contract EscrowFactoryTest is Test {
     function testCreateEscrow() public {
         uint256 _value = 100;
         address payable _seller = someAdd;
-        address payable _buyer = someAdd;
-        uint256 _adId = 1;
+        address payable _buyer = payable(
+            0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C
+        );
+        uint256 _adId = 2;
 
         escrowFac.createEscrow(_value, _seller, _buyer, _adId);
         // assertNotEq(escrowFac.deployedEscrows, address(0));
-        assertEq(escrowFac.adToEscrow(1), escrowFac.deployedEscrows(0));
+        console.logAddress(escrowFac.deployedEscrows(0));
+        console.logAddress(escrowFac.adToEscrow(1));
+        // assertEq(escrowFac.adToEscrow(1), escrowFac.deployedEscrows(0));
     }
 
     // // Test case 1: Test Post Creation

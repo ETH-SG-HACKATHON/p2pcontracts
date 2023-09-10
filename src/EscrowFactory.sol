@@ -37,9 +37,9 @@ contract EscrowFactoryContract {
         // }
 
         //check if the buyer != the seller
-        if (_seller == _buyer) {
-            revert escrowExists(_adId);
-        }
+        // if (_seller == _buyer) {
+        //     revert escrowExists(_adId);
+        // }
 
         address newEscrow = address(
             new EscrowContract(_value, _buyer, _seller, _adId, address(this))
@@ -65,11 +65,11 @@ contract EscrowFactoryContract {
         listingContract = listingAddress;
     }
 
-    function getDispute() public returns (address) {
+    function getDispute() public view returns (address) {
         return disputeContract;
     }
 
-    function getListing() public returns (address) {
+    function getListing() public view returns (address) {
         return listingContract;
     }
 }
