@@ -6,10 +6,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 // import "openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-
 // interface IERC20 {
 //     function transfer(address _to, uint256 _value) external returns (bool);
-    
+
 //     // don't need to define other functions, only using `transfer()` in this case
 // }
 
@@ -63,7 +62,6 @@ contract EscrowContract {
 
     mapping(address => uint256) public balances;
 
-
     // user control
     // Defining function modifier 'instate'
     modifier instate(State expected_state) {
@@ -96,21 +94,20 @@ contract EscrowContract {
         _;
     }
 
-
-//////////////
+    //////////////
     // mapping(address => uint256) public balances;
 
     event FundsDeposited(string result);
-    
+
     // event FundsDeposited(address indexed sender, uint256 amount);
     // Function to deposit funds into the contract
-    function depositFunds() public payable instate(State.await_deposit){
+    function depositFunds() public payable instate(State.await_deposit) {
         // require(seller.balance >= value, "Insufficient contract balance");
         state = State.await_confirmation;
         emit FundsDeposited("Funds Deposited in the Contract");
     }
 
-    function getBalance() public view returns(uint){
+    function getBalance() public view returns (uint) {
         return address(this).balance;
     }
 
@@ -133,24 +130,22 @@ contract EscrowContract {
 
     // Function to transfer funds to a specified address
 
-
     event SentFundsBuyer(string results);
+
     function transferBuyer()
         public
         onlyListing
         instate(State.await_confirmation)
     {
         require(buyer != address(0), "Invalid recipient address");
-        require(address(this).balance >= value, "Insufficient contract balance");
+
         buyer.transfer(address(this).balance);
-        
+
         // payable(address(this)).transfer(value);
 
         state = State.completed;
         emit SentFundsBuyer("Funds Sent to Buyer");
     }
-
-
 
     function compareStrings(
         string memory a,
@@ -160,22 +155,29 @@ contract EscrowContract {
     }
 
     event DisputeFundsSent(string results);
+
     //Dispute Transfer function can only be called by the dispute contract
     //b for buyer, s for seller
     function disputeTransfer(
         string calldata winner
-    ) public  onlyDispute instate(State.await_confirmation){
+    ) public onlyDispute instate(State.await_confirmation) {
         if (compareStrings(winner, "b")) {
             //winner == b, send funds to buyer
             require(buyer != address(0), "Invalid recipient address");
-            require(address(this).balance >= value, "Insufficient contract balance");
+            require(
+                address(this).balance >= value,
+                "Insufficient contract balance"
+            );
             buyer.transfer(address(this).balance);
             state = State.completed;
             emit DisputeFundsSent("dispute funds sent to buyer");
-        } else { 
+        } else {
             //winner==s, send funds to seller
             require(seller != address(0), "Invalid recipient address");
-            require(address(this).balance >= value, "Insufficient contract balance");
+            require(
+                address(this).balance >= value,
+                "Insufficient contract balance"
+            );
             seller.transfer(address(this).balance);
             state = State.completed;
             emit DisputeFundsSent("dispute funds sent to seller");
@@ -185,33 +187,33 @@ contract EscrowContract {
 
 //how to send the funds from seller to escrow contract
 //how to send the funds from contract to buyer
-    // error TranferFailed();
-    // function deposit(address token) public payable onlyBuyer instate(State.await_deposit) returns(bool) {
-        // bool success = IERC20(token).transferFrom(
-        //     seller,
-        //     address(this),
-        //     value
-        // );
+// error TranferFailed();
+// function deposit(address token) public payable onlyBuyer instate(State.await_deposit) returns(bool) {
+// bool success = IERC20(token).transferFrom(
+//     seller,
+//     address(this),
+//     value
+// );
 
-        // require(success, "Transaction was not successful");
-        // // if(!success) revert TransferFailed();
-        // return success;
+// require(success, "Transaction was not successful");
+// // if(!success) revert TransferFailed();
+// return success;
 
-    // }
+// }
 
-    // function depositUSDT() public {
-    //     require(usdtToken.transferFrom(buyer, address(this), value), "Transfer failed");
-    //     // Now, 'amount' of USDT is stored in this contract's balance.
-    // }
+// function depositUSDT() public {
+//     require(usdtToken.transferFrom(buyer, address(this), value), "Transfer failed");
+//     // Now, 'amount' of USDT is stored in this contract's balance.
+// }
 
-    // function deposit() public payable onlyBuyer inState(State.awaitDeposit) {
-    //     require(
-    //         msg.value == value,
-    //         "Deposit amount must match the escrow value."
-    //     );
-    //     emit FundsDeposited(msg.sender, msg.value);
-    //     state = State.Locked;
-    // }
+// function deposit() public payable onlyBuyer inState(State.awaitDeposit) {
+//     require(
+//         msg.value == value,
+//         "Deposit amount must match the escrow value."
+//     );
+//     emit FundsDeposited(msg.sender, msg.value);
+//     state = State.Locked;
+// }
 
-    //Confirm payment function will trasnfer the crypto funds to the buyer when Seller Confirms the payment
-    // from escrow contract send funds to the buyer
+//Confirm payment function will trasnfer the crypto funds to the buyer when Seller Confirms the payment
+// from escrow contract send funds to the buyer
