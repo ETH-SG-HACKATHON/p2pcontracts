@@ -164,20 +164,12 @@ contract EscrowContract {
         if (compareStrings(winner, "b")) {
             //winner == b, send funds to buyer
             require(buyer != address(0), "Invalid recipient address");
-            require(
-                address(this).balance >= value,
-                "Insufficient contract balance"
-            );
             buyer.transfer(address(this).balance);
             state = State.completed;
             emit DisputeFundsSent("dispute funds sent to buyer");
         } else {
             //winner==s, send funds to seller
             require(seller != address(0), "Invalid recipient address");
-            require(
-                address(this).balance >= value,
-                "Insufficient contract balance"
-            );
             seller.transfer(address(this).balance);
             state = State.completed;
             emit DisputeFundsSent("dispute funds sent to seller");
