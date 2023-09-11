@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
+import {Listings} from "../src/Listings.sol";
+
 contract Dispute {
+    Listings public listings;
+
     //state variables
     struct DisputeDetail {
-        address buyer;
-        address seller;
-        uint256 amount;
-        string paymentMethod;
+        uint256 adId;
         State state;
         uint256 votingPeriod;
         uint256 votesForBuyer;
@@ -19,30 +21,33 @@ contract Dispute {
         closed
     }
 
-    DisputeDetail[] public disputes;
+    using Counters for Counters.Counter;
+    Counters.Counter private _disputeIds;
+
+    mapping(uint256 => DisputeDetail) public disputes;
 
     //errors
     error DisputeAlreadyClosed();
     error OnlyBuyerOrSellerCanOpenDispute();
 
-    function createDispute(
-        address _buyer,
-        address _seller,
-        uint256 _amount,
-        string calldata _paymentMethod
-    ) public {
+    //constructor
+    constructor(address _listings) {
+        listings = Listings(_listings);
+    }
+
+    function createDispute(uint256 _adId) public {
         DisputeDetail memory newDispute = DisputeDetail({
-            buyer: _buyer,
-            seller: _seller,
-            amount: _amount,
-            paymentMethod: _paymentMethod,
+            adId: _adId,
             state: State.open,
             votingPeriod: block.timestamp + 1 minutes,
             votesForBuyer: 0,
             votesForSeller: 0
         });
 
-        disputes.push(newDispute);
+        _disputeIds.increment();
+        uint256 adId = _disputeIds.current();
+
+        disputes[adId] = newDispute;
     }
 
     function closeDispute(uint256 disputeIndex) public {
@@ -61,7 +66,7 @@ contract Dispute {
     }
 
     function getDisputeCount() public view returns (uint256) {
-        return disputes.length;
+        return _disputeIds.current();
     }
 
     function getDispute(
@@ -97,10 +102,7 @@ contract Dispute {
     }
 
     //b: buyer, s: seller
-    function executeDispute(
-        uint256 disputeIndex,
-        string memory receiver
-    ) public {
+    function executeDispute(uint256 disputeIndex, uint256 adId) public {
         //check that the dispute is open, revert with an error if not
         //check that the voting period has ended, revert with an error if not
 
@@ -116,5 +118,12 @@ contract Dispute {
         ) {
             receiver = "s";
         }
+
+        //with the updated receiver value, call the disputeTransfer function on the intended escrow contract
+    }
+
+    //set listings
+    function setListings(address _listings) public {
+        listings = Listings(_listings);
     }
 }

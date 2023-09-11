@@ -169,8 +169,8 @@ contract Listings {
         ads[adIndex].state = State.bankTransferVerified;
 
         //call the transfer function on escrow contract by detecting the address of the escrow contract
-        address escrowContractAddr = escrowFactory.getDeployedEscrowByAdId(
-            adIndex
+        address escrowContractAddr = payable(
+            escrowFactory.getDeployedEscrowByAdId(adIndex)
         );
         EscrowContract escrowContract = EscrowContract(escrowContractAddr);
         escrowContract.buyerTransfer();
