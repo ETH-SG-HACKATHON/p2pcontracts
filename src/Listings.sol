@@ -225,4 +225,8 @@ contract Listings {
     function getConfirmedBuyer(uint256 adIndex) public view returns (address) {
         return confirmedBuyer[adIndex];
     }
+
+    function setEscrowFactory(address _escrowFactory) public {
+        escrowFactory = EscrowFactoryContract(_escrowFactory);
+    }
 }
