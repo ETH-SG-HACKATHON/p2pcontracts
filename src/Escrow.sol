@@ -104,10 +104,14 @@ contract EscrowContract {
     
     // event FundsDeposited(address indexed sender, uint256 amount);
     // Function to deposit funds into the contract
-    function depositFunds() external payable instate(State.await_deposit){
-        require(seller.balance >= value, "Insufficient contract balance");
+    function depositFunds() public payable instate(State.await_deposit){
+        // require(seller.balance >= value, "Insufficient contract balance");
         state = State.await_confirmation;
         emit FundsDeposited("Funds Deposited in the Contract");
+    }
+
+    function getBalance() public view returns(uint){
+        return address(this).balance;
     }
 
     // function transferFunds() public {
@@ -138,7 +142,7 @@ contract EscrowContract {
     {
         require(buyer != address(0), "Invalid recipient address");
         require(address(this).balance >= value, "Insufficient contract balance");
-        buyer.transfer(value);
+        buyer.transfer(address(this).balance);
         
         // payable(address(this)).transfer(value);
 
@@ -165,14 +169,14 @@ contract EscrowContract {
             //winner == b, send funds to buyer
             require(buyer != address(0), "Invalid recipient address");
             require(address(this).balance >= value, "Insufficient contract balance");
-            buyer.transfer(value);
+            buyer.transfer(address(this).balance);
             state = State.completed;
             emit DisputeFundsSent("dispute funds sent to buyer");
         } else { 
             //winner==s, send funds to seller
             require(seller != address(0), "Invalid recipient address");
             require(address(this).balance >= value, "Insufficient contract balance");
-            seller.transfer(value);
+            seller.transfer(address(this).balance);
             state = State.completed;
             emit DisputeFundsSent("dispute funds sent to seller");
         }
