@@ -8,9 +8,7 @@ import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 contract Listings {
     EscrowFactoryContract public escrowFactory;
 
-    //     //TODO: modifier to check that the address has value
-
-    //     //enum to track the ad status
+    //enum to track the ad status
     enum State {
         // Following are the data members
         openForTrade,
@@ -38,12 +36,6 @@ contract Listings {
     //list of ads
     mapping(uint256 => SellAd) public ads;
 
-    //mapping of ad Ids to confirmed buyers
-    mapping(uint256 => address) public confirmedBuyer;
-
-    //mapping of adIds to interested buyers
-    mapping(uint256 => address[]) public interestedBuyers;
-
     error AmountLessThanZero();
     error NotSeller();
     error NotBuyer();
@@ -59,8 +51,8 @@ contract Listings {
 
     function createAd(
         string memory _token,
-        uint256 _amount,
-        uint256 _price,
+        uint _amount,
+        uint _price,
         uint256 _duration,
         string memory _paymentMethod,
         string memory _name,
@@ -106,7 +98,7 @@ contract Listings {
         escrowFactory.createEscrow(
             ads[adIndex].amount,
             payable(ads[adIndex].seller),
-            payable(confirmedBuyer[adIndex]),
+            payable(msg.sender),
             adIndex
         );
 
@@ -171,16 +163,6 @@ contract Listings {
             result[i] = ads[offset + i + 1];
         }
         return result;
-    }
-
-    function getInterestedBuyers(
-        uint256 adIndex
-    ) public view returns (address[] memory) {
-        return interestedBuyers[adIndex];
-    }
-
-    function getConfirmedBuyer(uint256 adIndex) public view returns (address) {
-        return confirmedBuyer[adIndex];
     }
 
     function setEscrowFactory(address _escrowFactory) public {
