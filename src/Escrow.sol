@@ -94,9 +94,10 @@ contract EscrowContract {
         _;
     }
 //////////////
+
     event FundsReceived(address indexed sender, uint256 amount);
 
-     receive() external payable {
+    receive() external payable {
         // This function is called when funds are sent to the contract
         emit FundsReceived(address(buyer), value);
     }
