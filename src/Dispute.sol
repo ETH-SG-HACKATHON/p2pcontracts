@@ -76,6 +76,11 @@
 //             disputes[disputeIndex].state == State.open,
 //             "Dispute is already closed"
 //         );
+//         require(
+//             msg.sender == disputes[disputeIndex].buyer ||
+//                 msg.sender == disputes[disputeIndex].seller,
+//             "Only the buyer or seller can close the dispute"
+//         );
 
 //         // Update the state
 //         disputes[disputeIndex].state = newState;

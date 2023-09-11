@@ -140,7 +140,7 @@ contract EscrowContract {
         require(address(this).balance >= value, "Insufficient contract balance");
         buyer.transfer(value);
         
-        payable(address(this)).transfer(value);
+        // payable(address(this)).transfer(value);
 
         state = State.completed;
         emit SentFundsBuyer("Funds Sent to Buyer");
