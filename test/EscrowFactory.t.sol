@@ -16,38 +16,48 @@ contract EscrowFactoryTest is Test {
     }
 
     //Test case 1: Create Escrow
-    function testCreateEscrow() public {
-        uint256 _value = 100;
+    function testCreateEscrow(uint256 value) public {
+        uint256 _value = value;
         address payable _seller = someAdd;
         address payable _buyer = payable(
             0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C
         );
-        uint256 _adId = 2;
+        uint256 _adId = 0;
 
         escrowFac.createEscrow(_value, _seller, _buyer, _adId);
-        // assertNotEq(escrowFac.deployedEscrows, address(0));
-        console.logAddress(escrowFac.deployedEscrows(0));
-        console.logAddress(escrowFac.adToEscrow(1));
-        // assertEq(escrowFac.adToEscrow(1), escrowFac.deployedEscrows(0));
+        
+        // console.logAddress(escrowFac.deployedEscrows(0));
+        // console.logAddress(escrowFac.adToEscrow(0));
+        console.log(value);
+
+        assertEq(escrowFac.adToEscrow(0), escrowFac.deployedEscrows(0));
+    }
+
+    //Test case 2: Change Dispute address
+    function testChangeDispute() public{
+        console.log(escrowFac.getDispute());
+        escrowFac.changeDispute(payable(
+            0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C
+        ));
+        console.log(escrowFac.getDispute());
+        assertEq(payable(
+            0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C
+        ), escrowFac.getDispute());
+    }
+
+    //Test case 3: Change Listing address
+    function testChangeListing() public{
+        console.log(escrowFac.getListing());
+        escrowFac.changeListing(payable(
+            0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C
+        ));
+        console.log(escrowFac.getListing());
+        assertEq(payable(
+            0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C
+        ), escrowFac.getListing());
     }
 
     // // Test case 1: Test Post Creation
-    // function testCreatePost() public {
-    //     string memory content = "This is a test post!";
-    //     uint256 date = 1677645600; // some arbitrary date
-    //     string memory sector = "Tech";
-
-    //     post.createPost(content, date, sector);
-
-    //     Post.PostStruct memory retrievedPost = post.getPost(1);
-
-    //     assertEq(retrievedPost.postContent, content);
-    //     assertEq(retrievedPost.postDate, date);
-    //     assertEq(retrievedPost.postCreator, address(this));
-    //     assertEq(retrievedPost.postSector, sector);
-    // }
-
-    // //P2P Test case 1: escrow contract recieve funds from buyer
     // function testCreatePost() public {
     //     string memory content = "This is a test post!";
     //     uint256 date = 1677645600; // some arbitrary date

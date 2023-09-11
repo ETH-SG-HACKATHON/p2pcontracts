@@ -4,6 +4,15 @@ pragma solidity ^0.8.13;
 import "./EscrowFactory.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+// import "openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+
+// interface IERC20 {
+//     function transfer(address _to, uint256 _value) external returns (bool);
+    
+//     // don't need to define other functions, only using `transfer()` in this case
+// }
+
 contract EscrowContract {
     address public escrowFactoryAddr;
     EscrowFactoryContract public escrowFactoryContract;
@@ -18,11 +27,16 @@ contract EscrowContract {
 
     State public state;
 
+    address public usdtAddress; // Address of the USDT contract
+    // IERC20 public usdtToken; // Interface for interacting with USDT
+
+
     constructor(
         uint256 _value,
         address payable _buyer,
         address payable _seller,
         uint256 _adId,
+        //address _usdtAddress,
         address _escrowFactoryAddr
     ) {
         // Assigning the values of the state variables
@@ -32,6 +46,9 @@ contract EscrowContract {
         seller = _seller;
         adId = _adId;
         escrowFactoryAddr = _escrowFactoryAddr;
+
+        // usdtAddress = _usdtAddress;
+        // usdtToken = IERC20(_usdtAddress);
 
         state = State.await_deposit;
     }
@@ -76,29 +93,47 @@ contract EscrowContract {
         );
         _;
     }
+//////////////
+    event FundsReceived(address indexed sender, uint256 amount);
 
-    // //asks seller to deposit the crypto as collateral
-    // function deposit() public payable onlyBuyer instate(State.await_deposit) {
-    //     //seller transfer funds to not arbiter but store the funds inside the contract itself
+     receive() external payable {
+        // This function is called when funds are sent to the contract
+        emit FundsReceived(address(buyer), value);
+    }
 
-    //     //move the contract state to wait for the seller to confirm the funds payment
-    //     state = State.await_confirmation;
+    // You can call this function to manually log funds
+    function logFunds() external payable {
+        emit FundsReceived(address(buyer), value);
+    }
+
+    // Function to transfer funds to a specified address
+    function transferFunds() public {
+        require(buyer != address(0), "Invalid recipient address");
+        require(address(this).balance >= value, "Insufficient contract balance");
+
+        buyer.transfer(value);
+    }
+
+    // error TranferFailed();
+    // function deposit(address token) public payable onlyBuyer instate(State.await_deposit) returns(bool) {
+        // bool success = IERC20(token).transferFrom(
+        //     seller,
+        //     address(this),
+        //     value
+        // );
+
+        // require(success, "Transaction was not successful");
+        // // if(!success) revert TransferFailed();
+        // return success;
+
     // }
 
-    // function deposit() public payable onlyBuyer instate(State.await_deposit) {
-    //     require(
-    //         IERC20(token).allowance(msg.sender, address(this)),
-    //         "Not approved to send balance requested"
-    //     );
-    //     bool success = IERC20(token).transferFrom(
-    //         msg.sender,
-    //         address(this),
-    //         _amount
-    //     );
-    //     require(success, "Transaction was not successful");
+    // function depositUSDT() public {
+    //     require(usdtToken.transferFrom(buyer, address(this), value), "Transfer failed");
+    //     // Now, 'amount' of USDT is stored in this contract's balance.
     // }
 
-    // function deposit() public payable onlyBuyer inState(State.Created) {
+    // function deposit() public payable onlyBuyer inState(State.awaitDeposit) {
     //     require(
     //         msg.value == value,
     //         "Deposit amount must match the escrow value."
@@ -109,14 +144,16 @@ contract EscrowContract {
 
     //Confirm payment function will trasnfer the crypto funds to the buyer when Seller Confirms the payment
     // from escrow contract send funds to the buyer
+
     function buyerTransfer()
         public
         payable
         onlyListing
         instate(State.await_confirmation)
     {
-        seller.transfer(value); //transfer to buyer
-
+        require(buyer != address(0), "Invalid recipient address");
+        require(address(this).balance >= value, "Insufficient contract balance");
+        buyer.transfer(value);
         state = State.completed;
     }
 
@@ -131,15 +168,23 @@ contract EscrowContract {
     //b for buyer, s for seller
     function disputeTransfer(
         string calldata winner
-    ) public onlyDispute instate(State.await_confirmation) {
+    ) public view onlyDispute instate(State.await_confirmation) returns(string calldata){
         if (compareStrings(winner, "s")) {
             //send funds to seller
-            state = State.completed;
+            // require(seller != address(0), "Invalid recipient address");
+            // require(address(this).balance >= value, "Insufficient contract balance");
+            // seller.transfer(value);
+            // state = State.completed;
+            return winner;
         } else {
             //winner is b, send funds to buyer
-            state = State.completed;
+            // require(buyer != address(0), "Invalid recipient address");
+            // require(address(this).balance >= value, "Insufficient contract balance");
+            // buyer.transfer(value);
+            // state = State.completed;
+            return winner;
         }
     }
 }
-//how to send the funds from buyerinto the escrow contract
-//how to send the funds from contract
+//how to send the funds from seller to escrow contract
+//how to send the funds from contract to buyer
