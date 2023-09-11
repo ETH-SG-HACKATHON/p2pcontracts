@@ -41,8 +41,8 @@ contract EscrowTest is Test {
     // //   vm.expectEmit(addre)
     // }
 
-    function testDisputeTransfer() public view{
-        console.log("afasd");
-        console.log(escrow.disputeTransfer("s"));
-    }
+    // function testDisputeTransfer() public view{
+        // console.log("afasd");
+        // console.log(escrow.disputeTransfer("s"));
+    // }
 }

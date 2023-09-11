@@ -19,14 +19,11 @@ contract EscrowFactoryContract {
     mapping(uint256 => address) public adToEscrow;
 
     event EscrowCreated(
-        address indexed escrowAddress,
-        address indexed seller,
-        address indexed buyer,
-        uint256 adId
+        string results
     );
     error escrowExists(uint256 _adId);
 
-        function createEscrow(
+    function createEscrow(
             uint256 _value, //amount from listing
             address payable _seller, // get from listing
             address payable _buyer, //msg.sender
@@ -49,7 +46,7 @@ contract EscrowFactoryContract {
             deployedEscrows.push(newEscrow);
             adToEscrow[_adId] = newEscrow;
 
-            emit EscrowCreated(newEscrow, _seller, _buyer, _adId);
+            emit EscrowCreated("Escrow Contract Created");
         }
 
     function getDeployedEscrows() public view returns (address[] memory) {
