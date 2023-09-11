@@ -40,4 +40,8 @@ contract EscrowTest is Test {
       payable(address(escrow)).transfer(0.00001 ether);
     //   vm.expectEmit(addre)
     }
+
+    function testDisputeTransfer() public{
+        escrow.disputeTransfer("s");
+    }
 }
