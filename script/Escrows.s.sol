@@ -7,10 +7,10 @@ import {EscrowFactoryContract} from "../src/EscrowFactory.sol";
 contract Deploy is Script {
     function run() external {
         address DISPUTE_CONTRACT_ADDRESS = address(0);
-        address LISTING_CONTRACT_ADDRESS = 0xABC39C8550e42eF9bA6aaFAE47A27a2774977a5D;
+        address LISTING_CONTRACT_ADDRESS = 0x1a8a56A0b9C7a6F02DbC129d4E5E52c18206ad2c;
 
         bytes32 ESCROWS_SALT = bytes32(
-            abi.encode(0x44325032505f457363726f777332)
+            abi.encode(0x44325032505f457363726f777333)
         ); // ~ "D2P2P_Escrows"
 
         // set up deployer
