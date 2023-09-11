@@ -28,6 +28,7 @@ contract Listings {
         string name;
         string accountNumber;
         State state;
+        address deployedEscrow;
     }
 
     using Counters for Counters.Counter;
@@ -77,10 +78,11 @@ contract Listings {
             paymentMethod: _paymentMethod,
             name: _name,
             accountNumber: _accountNumber,
-            state: State.openForTrade
+            state: State.openForTrade,
+            deployedEscrow: address(0)
         });
 
-        //         //add the ad to the mapping
+        //add the ad to the mapping
         ads[postId] = newAd;
     }
 
@@ -95,12 +97,15 @@ contract Listings {
         }
 
         //Call the deployEscrow function here
-        escrowFactory.createEscrow(
+        address newEscrow = escrowFactory.createEscrow(
             ads[adIndex].amount,
             payable(ads[adIndex].seller),
             payable(msg.sender),
             adIndex
         );
+
+        //update the deployedEscrow address in the ad
+        ads[adIndex].deployedEscrow = newEscrow;
 
         // Update the state
         ads[adIndex].state = State.adInProgress;
