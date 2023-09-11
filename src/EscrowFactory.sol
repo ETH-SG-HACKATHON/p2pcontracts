@@ -31,7 +31,7 @@ contract EscrowFactoryContract {
         address payable _seller, // get from listing
         address payable _buyer, //msg.sender
         uint256 _adId //id from listing
-    ) public {
+    ) public returns (address) {
         //check if sell listing is still available
         if (adToEscrow[_adId] != address(0)) {
             revert escrowExists(_adId);
@@ -50,6 +50,8 @@ contract EscrowFactoryContract {
         adToEscrow[_adId] = newEscrow;
 
         emit EscrowCreated(newEscrow, _seller, _buyer, _adId);
+
+        return newEscrow;
     }
 
     function getDeployedEscrows() public view returns (address[] memory) {
