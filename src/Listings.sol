@@ -92,44 +92,6 @@ contract Listings {
         ads[postId] = newAd;
     }
 
-    //function where a buyer can show interest in an ad
-    function showInterest(uint256 adIndex) public {
-        if (ads[adIndex].state != State.openForTrade) {
-            revert TradeNotOpen();
-        }
-
-        //buyer cannot be seller
-        if (msg.sender == ads[adIndex].seller) {
-            revert NotBuyer();
-        }
-
-        //add the buyer to the mapping
-        interestedBuyers[adIndex].push(msg.sender);
-    }
-
-    //function where the seller confirms the buyer
-    function confirmBuyer(uint256 adIndex, address buyer) public {
-        if (msg.sender == ads[adIndex].seller) {
-            revert NotBuyer();
-        }
-
-        //check if the buyer is in the interestedBuyers mapping
-        bool isInterested = false;
-        for (uint256 i = 0; i < interestedBuyers[adIndex].length; i++) {
-            if (interestedBuyers[adIndex][i] == buyer) {
-                isInterested = true;
-                break;
-            }
-        }
-
-        if (!isInterested) {
-            revert NotBuyer();
-        }
-
-        //add the buyer to the mapping
-        confirmedBuyer[adIndex] = buyer;
-    }
-
     //can only be called by the buyer
     function startTrade(uint256 adIndex) public {
         if (ads[adIndex].state == State.adInProgress) {
@@ -137,11 +99,6 @@ contract Listings {
         }
 
         if (msg.sender == ads[adIndex].seller) {
-            revert NotBuyer();
-        }
-
-        //check if the buyer is in the interestedBuyers mapping
-        if (msg.sender != confirmedBuyer[adIndex]) {
             revert NotBuyer();
         }
 
@@ -169,11 +126,11 @@ contract Listings {
         ads[adIndex].state = State.bankTransferVerified;
 
         //call the transfer function on escrow contract by detecting the address of the escrow contract
-        address escrowContractAddr = payable(
-            escrowFactory.getDeployedEscrowByAdId(adIndex)
+        address escrowContractAddr = escrowFactory.getDeployedEscrowByAdId(
+            adIndex
         );
         EscrowContract escrowContract = EscrowContract(escrowContractAddr);
-        escrowContract.buyerTransfer();
+        escrowContract.transferBuyer();
 
         //update the state here to adClosed
         ads[adIndex].state = State.adClosed;

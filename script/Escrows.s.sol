@@ -10,7 +10,7 @@ contract Deploy is Script {
         address LISTING_CONTRACT_ADDRESS = 0xABC39C8550e42eF9bA6aaFAE47A27a2774977a5D;
 
         bytes32 ESCROWS_SALT = bytes32(
-            abi.encode(0x44325032505f457363726f777332)
+            abi.encode(0x44325032505f457363726f777333)
         ); // ~ "D2P2P_Escrows"
 
         // set up deployer

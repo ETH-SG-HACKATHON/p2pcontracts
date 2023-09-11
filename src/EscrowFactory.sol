@@ -59,7 +59,7 @@ contract EscrowFactoryContract {
     function getDeployedEscrowByAdId(
         uint256 _adId
     ) public view returns (address) {
-        return adToEscrow[_adId];
+        return payable(adToEscrow[_adId]);
     }
 
     //check if the buyer != the seller
