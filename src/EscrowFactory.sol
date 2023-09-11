@@ -53,6 +53,12 @@ contract EscrowFactoryContract {
         return deployedEscrows;
     }
 
+    function getDeployedEscrowByAdId(
+        uint256 _adId
+    ) public view returns (address) {
+        return adToEscrow[_adId];
+    }
+
     //check if the buyer != the seller
     //check if seller still has the ammount of funds
     //DONE check if sell listing is still available
