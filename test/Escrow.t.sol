@@ -31,9 +31,13 @@ contract EscrowTest is Test {
     // }
 
 
-    function testDisputeTransfer() public{
-        escrow.disputeTransfer("s");
-        // assertEq("s", "s");
-
+    function testTransfer() public payable{
+      address someRandomUser = vm.addr(1);
+      vm.prank(someRandomUser);
+      vm.deal(someRandomUser, 1 ether); 
+    //   vm.expectEmit(true, true, false, true, address(escrow));
+    //   emit escrow.FundsReceived(address(this), address(1), 10);
+      payable(address(escrow)).transfer(0.00001 ether);
+    //   vm.expectEmit(addre)
     }
 }

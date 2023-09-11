@@ -4,6 +4,15 @@ pragma solidity ^0.8.13;
 import "./EscrowFactory.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+// import "openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+
+// interface IERC20 {
+//     function transfer(address _to, uint256 _value) external returns (bool);
+    
+//     // don't need to define other functions, only using `transfer()` in this case
+// }
+
 contract EscrowContract {
     address public escrowFactoryAddr;
     EscrowFactoryContract public escrowFactoryContract;
@@ -19,7 +28,7 @@ contract EscrowContract {
     State public state;
 
     address public usdtAddress; // Address of the USDT contract
-    IERC20 public usdtToken; // Interface for interacting with USDT
+    // IERC20 public usdtToken; // Interface for interacting with USDT
 
 
     constructor(
@@ -84,39 +93,47 @@ contract EscrowContract {
         );
         _;
     }
-///////////
-    // event TokenTransferred(IERC20 token, address to, uint256 amount);
-   
-    // function getBalance(IERC20 tokenAddress) public view returns(uint256) {
-    //     return tokenAddress.balanceOf(address(this));
-    // }
-   
-    // function withdrawERC20Token(IERC20 tokenAddress) public {
-    //     require(amount <= tokenAddress.balanceOf(address(this)), "Insufficient token balance");
-    //     tokenAddress.transfer(msg.sender, value);
-    
-    //     emit TokenTransferred(tokenAddress, msg.sender, amount);   
-    // }
-    error TranferFailed();
-    function deposit(address token) public payable onlyBuyer instate(State.await_deposit) returns(bool) {
-        // s_balances[msg.token][token]+=amount;
-        bool success = IERC20(token).transferFrom(
-            seller,
-            address(this),
-            value
-        );
+//////////////
+    event FundsReceived(address indexed sender, uint256 amount);
 
-        require(success, "Transaction was not successful");
-        // if(!success) revert TransferFailed();
-        return success;
+     receive() external payable {
+        // This function is called when funds are sent to the contract
+        emit FundsReceived(address(buyer), value);
     }
 
-    function depositUSDT() public {
-        require(usdtToken.transferFrom(buyer, address(this), value), "Transfer failed");
-        // Now, 'amount' of USDT is stored in this contract's balance.
+    // You can call this function to manually log funds
+    function logFunds() external payable {
+        emit FundsReceived(address(buyer), value);
     }
 
-    // function deposit() public payable onlyBuyer inState(State.Created) {
+    // Function to transfer funds to a specified address
+    function transferFunds() public {
+        require(buyer != address(0), "Invalid recipient address");
+        require(address(this).balance >= value, "Insufficient contract balance");
+
+        buyer.transfer(value);
+    }
+
+    // error TranferFailed();
+    // function deposit(address token) public payable onlyBuyer instate(State.await_deposit) returns(bool) {
+        // bool success = IERC20(token).transferFrom(
+        //     seller,
+        //     address(this),
+        //     value
+        // );
+
+        // require(success, "Transaction was not successful");
+        // // if(!success) revert TransferFailed();
+        // return success;
+
+    // }
+
+    // function depositUSDT() public {
+    //     require(usdtToken.transferFrom(buyer, address(this), value), "Transfer failed");
+    //     // Now, 'amount' of USDT is stored in this contract's balance.
+    // }
+
+    // function deposit() public payable onlyBuyer inState(State.awaitDeposit) {
     //     require(
     //         msg.value == value,
     //         "Deposit amount must match the escrow value."
@@ -134,9 +151,6 @@ contract EscrowContract {
         onlyListing
         instate(State.await_confirmation)
     {
-        // seller.transfer(value); //transfer to buyer
-        usdtToken.transfer(buyer, value);
-
         state = State.completed;
     }
 
