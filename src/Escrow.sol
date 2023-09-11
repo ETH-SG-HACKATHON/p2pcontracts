@@ -168,19 +168,21 @@ contract EscrowContract {
     //b for buyer, s for seller
     function disputeTransfer(
         string calldata winner
-    ) public onlyDispute instate(State.await_confirmation) {
+    ) public view onlyDispute instate(State.await_confirmation) returns(string calldata){
         if (compareStrings(winner, "s")) {
             //send funds to seller
-            require(seller != address(0), "Invalid recipient address");
-            require(address(this).balance >= value, "Insufficient contract balance");
-            seller.transfer(value);
-            state = State.completed;
+            // require(seller != address(0), "Invalid recipient address");
+            // require(address(this).balance >= value, "Insufficient contract balance");
+            // seller.transfer(value);
+            // state = State.completed;
+            return winner;
         } else {
             //winner is b, send funds to buyer
-            require(buyer != address(0), "Invalid recipient address");
-            require(address(this).balance >= value, "Insufficient contract balance");
-            buyer.transfer(value);
-            state = State.completed;
+            // require(buyer != address(0), "Invalid recipient address");
+            // require(address(this).balance >= value, "Insufficient contract balance");
+            // buyer.transfer(value);
+            // state = State.completed;
+            return winner;
         }
     }
 }

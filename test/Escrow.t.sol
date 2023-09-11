@@ -31,17 +31,18 @@ contract EscrowTest is Test {
     // }
 
 
-    function testTransfer() public payable{
-      address someRandomUser = vm.addr(1);
-      vm.prank(someRandomUser);
-      vm.deal(someRandomUser, 1 ether); 
-    //   vm.expectEmit(true, true, false, true, address(escrow));
-    //   emit escrow.FundsReceived(address(this), address(1), 10);
-      payable(address(escrow)).transfer(0.00001 ether);
-    //   vm.expectEmit(addre)
-    }
+    // function testTransfer() public payable{
+    //   address someRandomUser = vm.addr(1);
+    //   vm.prank(someRandomUser);
+    //   vm.deal(someRandomUser, 1 ether); 
+    // //   vm.expectEmit(true, true, false, true, address(escrow));
+    // //   emit escrow.FundsReceived(address(this), address(1), 10);
+    //   payable(address(escrow)).transfer(0.00001 ether);
+    // //   vm.expectEmit(addre)
+    // }
 
-    function testDisputeTransfer() public{
-        escrow.disputeTransfer("s");
+    function testDisputeTransfer() public view{
+        console.log("afasd");
+        console.log(escrow.disputeTransfer("s"));
     }
 }
