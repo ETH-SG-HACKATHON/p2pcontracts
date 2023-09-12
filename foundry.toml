@@ -15,6 +15,7 @@ polygon-mumbai = "${POLYGON_MUMBAI_RPC}"
 linea-testnet = "${LINEA_TESTNET_RPC}"
 neon-evm = "${NEON_EVM_TESTNET_RPC}"
 polygon-zkevm = "${POLYGON_ZKEVM_TESTNET_RPC}"
+ziliqa-testnet = "${ZIL_TESTNET_RPC}"
 
 [etherscan]
 polygon-mumbai = { key = "${POLYGON_ETHERSCAN_API_KEY}", url = "https://api-testnet.polygonscan.com/api" }

@@ -11,7 +11,7 @@ contract Deploy is Script {
         bytes32 D2P2P_SALT = bytes32(abi.encode(0x44325032503232)); // ~ "D2P2P"
         string memory mnemonic = vm.envString("MNEMONIC");
 
-        uint256 privateKey = vm.deriveKey(mnemonic, 8);
+        uint256 privateKey = vm.deriveKey(mnemonic, 7);
 
         // set up deployer
         address deployer = vm.rememberKey(privateKey);
@@ -25,13 +25,12 @@ contract Deploy is Script {
         Listings listings = new Listings{salt: D2P2P_SALT}(address(0));
 
         // deploy Dispute contract
-        Dispute dispute = new Dispute(address(listings));
+        Dispute dispute = new Dispute{salt: D2P2P_SALT}(address(listings));
 
         // deploy EscrowFactory contract
-        EscrowFactoryContract escrowFactory = new EscrowFactoryContract(
-            address(dispute),
-            address(listings)
-        );
+        EscrowFactoryContract escrowFactory = new EscrowFactoryContract{
+            salt: D2P2P_SALT
+        }(address(dispute), address(listings));
 
         // set escrowFactory address in listings contract
         listings.setEscrowFactory(address(escrowFactory));
