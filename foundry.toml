@@ -12,6 +12,11 @@ enabled = true
 
 [rpc_endpoints]
 polygon-mumbai = "${POLYGON_MUMBAI_RPC}"
+linea-testnet = "${LINEA_TESTNET_RPC}"
+neon-evm = "${NEON_EVM_TESTNET_RPC}"
+polygon-zkevm = "${POLYGON_ZKEVM_TESTNET_RPC}"
 
 [etherscan]
 polygon-mumbai = { key = "${POLYGON_ETHERSCAN_API_KEY}", url = "https://api-testnet.polygonscan.com/api" }
+linea-testnet = { key = "${LINEA_ETHERSCAN_API_KEY}", url = "https://api.lineascan.build/api" }
+polygon-zkevm = { key = "${POLYGON_ZKEVM_ETHERSCAN_API_KEY}", url = "https://api-testnet-zkevm.polygonscan.com/" }

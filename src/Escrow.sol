@@ -72,16 +72,16 @@ contract EscrowContract {
         require(msg.sender != seller);
         _;
     }
-    modifier onlyDispute() {
-        EscrowFactoryContract escrowFac = EscrowFactoryContract(
-            escrowFactoryAddr
-        );
-        require(
-            msg.sender == escrowFac.getDispute(),
-            "Only the dispute address can call this function"
-        );
-        _;
-    }
+    // modifier onlyDispute() {
+    //     EscrowFactoryContract escrowFac = EscrowFactoryContract(
+    //         escrowFactoryAddr
+    //     );
+    //     require(
+    //         msg.sender == escrowFac.getDispute(),
+    //         "Only the dispute address can call this function"
+    //     );
+    //     _;
+    // }
 
     modifier onlyListing() {
         EscrowFactoryContract escrowF = EscrowFactoryContract(
@@ -160,7 +160,7 @@ contract EscrowContract {
     //b for buyer, s for seller
     function disputeTransfer(
         string calldata winner
-    ) public onlyDispute instate(State.await_confirmation) {
+    ) public instate(State.await_confirmation) {
         if (compareStrings(winner, "b")) {
             //winner == b, send funds to buyer
             require(buyer != address(0), "Invalid recipient address");

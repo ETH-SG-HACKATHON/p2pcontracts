@@ -42,7 +42,7 @@ contract Dispute {
         DisputeDetail memory newDispute = DisputeDetail({
             adId: _adId,
             state: State.open,
-            votingPeriod: block.timestamp + 15 minutes,
+            votingPeriod: block.timestamp + 5 minutes,
             votesForBuyer: 0,
             votesForSeller: 0
         });
@@ -147,9 +147,9 @@ contract Dispute {
             revert DisputeAlreadyClosed();
         }
         //check that the voting period has ended, revert with an error if not
-        if (block.timestamp < disputes[disputeIndex].votingPeriod) {
-            revert DisputeAlreadyClosed();
-        }
+        // if (block.timestamp < disputes[disputeIndex].votingPeriod) {
+        //     revert DisputeAlreadyClosed();
+        // }
 
         //get escrow contract address from the ads mapping in listing
         address adEscrow = listings
