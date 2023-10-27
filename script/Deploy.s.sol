@@ -9,12 +9,13 @@ import {EscrowFactoryContract} from "../src/EscrowFactory.sol";
 contract Deploy is Script {
     function run() external {
         bytes32 D2P2P_SALT = bytes32(abi.encode(0x44325032503232)); // ~ "D2P2P"
-        string memory mnemonic = vm.envString("MNEMONIC");
+        // string memory mnemonic = vm.envString("MNEMONIC");
+        uint privKey = vm.envUint("PRIVATE_KEY");
 
-        uint256 privateKey = vm.deriveKey(mnemonic, 8);
+        // uint256 privateKey = vm.deriveKey(mnemonic, 8);
 
         // set up deployer
-        address deployer = vm.rememberKey(privateKey);
+        address deployer = vm.rememberKey(privKey);
         // log deployer data
         console2.log("Deployer: ", deployer);
         console2.log("Deployer Nonce: ", vm.getNonce(deployer));
@@ -22,7 +23,7 @@ contract Deploy is Script {
         vm.startBroadcast(deployer);
 
         // deploy Listings contract
-        Listings listings = new Listings{salt: D2P2P_SALT}(address(0));
+        Listings listings = new Listings(address(0));
 
         // deploy Dispute contract
         Dispute dispute = new Dispute(address(listings));
