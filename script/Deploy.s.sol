@@ -26,13 +26,12 @@ contract Deploy is Script {
         Listings listings = new Listings(address(0));
 
         // deploy Dispute contract
-        Dispute dispute = new Dispute(address(listings));
+        Dispute dispute = new Dispute{salt: D2P2P_SALT}(address(listings));
 
         // deploy EscrowFactory contract
-        EscrowFactoryContract escrowFactory = new EscrowFactoryContract(
-            address(dispute),
-            address(listings)
-        );
+        EscrowFactoryContract escrowFactory = new EscrowFactoryContract{
+            salt: D2P2P_SALT
+        }(address(dispute), address(listings));
 
         // set escrowFactory address in listings contract
         listings.setEscrowFactory(address(escrowFactory));
